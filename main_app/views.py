@@ -1,8 +1,9 @@
-from main_app.models import Product
-from main_app.serializers import ProductSerializer
+from main_app.models import Product,Category
+from main_app.serializers import ProductSerializer,CategorySerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+# from rest_framework.renderers import JSONRenderer
 
 class ProductApi(APIView):
     def get(request, self, pk=None, format=None):
@@ -42,3 +43,15 @@ class ProductApi(APIView):
         comp_obj = Product.objects.get(id=pk)
         comp_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CategoryApi(APIView):
+    def get(request, self, pk=None, format=None):
+        # renderer_classes = [JSONRenderer]
+        id = pk
+        if id is not None:
+            comp_obj = Category.objects.get(id=id)
+            serializer = CategorySerializer(comp_obj)
+            return Response(serializer.data)
+        comp_obj = Category.objects.all()
+        serializer = CategorySerializer(comp_obj, many=True)
+        return Response(serializer.data)
